@@ -3,12 +3,13 @@
 all: BeneathTheSurface
 
 SDL_SRCS=sdl_exception.cpp sdl_init.cpp window.cpp renderer.cpp texture.cpp surface.cpp
+FONT_SRCS=freetype_exception.cpp library.cpp face.cpp glyph.cpp
 MAIN_SRCS=main.cpp
 
-VPATH=src:src/sdl
+VPATH=src:src/sdl:src/font
 CFLAGS+="-Isrc"
 
-SRCS=${SDL_SRCS} ${MAIN_SRCS}
+SRCS=${SDL_SRCS} ${FONT_SRCS} ${MAIN_SRCS}
 
 OBJS=${SRCS:.cpp=.o}
 DEPS=${SRCS:.cpp=.d}
