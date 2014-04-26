@@ -14,8 +14,9 @@ public:
 
 	Window(const Window &copy) = delete;
 	Window(Window &&move) = delete;
+
 private:
-	SDL_Window *window;
+	SDL_Window *window = nullptr;
 
 public:
 	SDL_Window* GetWindow() const { return window; }

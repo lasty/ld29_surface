@@ -2,7 +2,7 @@
 .PHONY: all
 all: BeneathTheSurface
 
-SDL_SRCS=sdl_exception.cpp sdl_init.cpp window.cpp renderer.cpp
+SDL_SRCS=sdl_exception.cpp sdl_init.cpp window.cpp renderer.cpp texture.cpp surface.cpp
 MAIN_SRCS=main.cpp
 
 VPATH=src:src/sdl

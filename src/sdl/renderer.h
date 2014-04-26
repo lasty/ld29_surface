@@ -14,8 +14,10 @@ public:
 
 	Renderer(const Renderer &copy) = delete;
 	Renderer(Renderer &&move) = delete;
+
 private:
-	SDL_Renderer *renderer;
+	SDL_Renderer *renderer = nullptr;
+
 public:
 	SDL_Renderer* GetRenderer() const { return renderer; }
 
