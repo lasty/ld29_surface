@@ -32,7 +32,7 @@ public:
 
 		for (int i=0; i<10; i++)
 		{
-			worldmap.SetTile(i, i, "sand");
+			worldmap.SetTile(i, 2, "sand");
 		}
 	}
 
@@ -56,13 +56,12 @@ public:
 		rend.SetColour(20, 30, 40, 255);
 		rend.Clear();
 
-		//SDL_Rect r{0,0, tiles.GetWidth()*2, tiles.GetHeight()*2};
-		//renderer.Copy(tiles, nullptr, &r);
+
+		worldmap.Render(rend, 0, 0);
+
 
 		text1.Render(rend, textx, texty);
 		fps_text.Render(rend, -10, 5);
-
-		worldmap.Render(rend, 0, 0);
 	}
 
 	void OnKey(SDL_KeyboardEvent &e, bool down) override

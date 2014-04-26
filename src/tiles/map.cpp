@@ -46,7 +46,7 @@ void Map::SetTile(int x, int y, const std::string &tilename)
 
 	Tile & tile = GetTileDef(tilename);
 
-	GetCell(x, y) = Cell(this, tile, x*tile_size, y*tile_size);
+	GetCell(y, x) = Cell(this, tile, x*tile_size, y*tile_size);
 }
 
 
