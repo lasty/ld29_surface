@@ -28,7 +28,7 @@ public:
 	void Flip() const;
 
 	int GetWidth() const { return window.GetWidth(); }
-	int GetHeight() const { return window.GetWidth(); }
+	int GetHeight() const { return window.GetHeight(); }
 
 };
 

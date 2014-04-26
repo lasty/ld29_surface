@@ -55,7 +55,7 @@ void Text::Render(Renderer &rend, int x, int y)
 
 	if (x < 0)
 	{
-		r.x = rend.GetWidth() - width;
+		r.x = rend.GetWidth() - width + x;
 	}
 	else
 	{
@@ -64,7 +64,7 @@ void Text::Render(Renderer &rend, int x, int y)
 
 	if (y < 0)
 	{
-		r.y = rend.GetHeight() - height;
+		r.y = rend.GetHeight() - height + y;
 	}
 	else
 	{

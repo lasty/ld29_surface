@@ -9,7 +9,7 @@
 #include "game_base.h"
 
 #include <iostream>
-
+#include <sstream>
 
 class TestGame : public Game_Base
 {
@@ -21,8 +21,11 @@ public:
 	}
 
 	Font f1{"data/fonts/DroidSans.ttf", 48};
+	Font smallfont{"data/fonts/DroidSans.ttf", 16};
 
 	Text text1{renderer, f1, "Under the Surface"};
+
+	Text fps_text{renderer, smallfont, "-"};
 
 	Texture tiles{renderer, "data/tiles.png"};
 
@@ -39,6 +42,8 @@ public:
 		renderer.Copy(tiles, nullptr, &r);
 
 		text1.Render(rend, textx, texty);
+		fps_text.Render(rend, -10, 5);
+
 	}
 
 	void OnKey(SDL_KeyboardEvent &e, bool down) override
@@ -71,7 +76,10 @@ public:
 
 	void OnFPS(int frames) override
 	{
-		std::cout << "FPS: " << frames << std::endl;
+		std::ostringstream s;
+		s << "FPS: " << frames;
+
+		fps_text.SetText(renderer, smallfont, s.str());
 	}
 };
 
