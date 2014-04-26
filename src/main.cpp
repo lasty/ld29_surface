@@ -8,6 +8,9 @@
 
 #include "tiles/tile.h"
 
+#include "tiles/map.h"
+
+
 #include "game_base.h"
 
 #include <iostream>
@@ -19,7 +22,18 @@ public:
 	TestGame(const std::string &title, int w, int h)
 	: Game_Base(title, w, h)
 	{
+		Tile t_grass{tiles, 32, 0, 0, 1, 1, 2};
+		Tile t_sand{tiles, 32, 1, 0, 1, 1, 2};
 
+		worldmap.NewTileDef("grass", std::move(t_grass));
+		worldmap.NewTileDef("sand", std::move(t_sand));
+
+		worldmap.NewMap(10, 10, 64, "grass");
+
+		for (int i=0; i<10; i++)
+		{
+			worldmap.SetTile(i, i, "sand");
+		}
 	}
 
 	Font f1{"data/fonts/DroidSans.ttf", 48};
@@ -31,8 +45,7 @@ public:
 
 	Texture tiles{renderer, "data/tiles.png"};
 
-	Tile t_grass{tiles, 16, 0, 0, 1, 1};
-	Tile t_sand{tiles, 16, 1, 0, 1, 1};
+	Map worldmap;
 
 	bool dragging = false;
 	int textx=100;
@@ -49,8 +62,7 @@ public:
 		text1.Render(rend, textx, texty);
 		fps_text.Render(rend, -10, 5);
 
-		t_grass.Render(rend, 0, 0);
-		t_sand.Render(rend, 32, 0);
+		worldmap.Render(rend, 0, 0);
 	}
 
 	void OnKey(SDL_KeyboardEvent &e, bool down) override

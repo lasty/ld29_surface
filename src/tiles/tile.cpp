@@ -2,11 +2,11 @@
 #include "tiles/tile.h"
 
 
-Tile::Tile(Texture &texture, int grids, int x, int y, int xspan, int yspan, int zoom)
+Tile::Tile(Texture &texture, int tilesize, int x, int y, int xspan, int yspan, int zoom)
 : tex_ref(&texture)
 {
-	int width = texture.GetWidth();
-	int tilesize = width / grids;
+	//int width = texture.GetWidth();
+	//int tilesize = width / grids;
 
 	src.x = x*tilesize;
 	src.y = y*tilesize;
