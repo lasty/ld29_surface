@@ -6,8 +6,7 @@
 #include "sdl/surface.h"
 #include "sdl/texture.h"
 
-#include "font/face.h"
-#include "font/glyph.h"
+#include "font/font.h"
 
 #include <iostream>
 
@@ -33,7 +32,7 @@ int main(int argc, char* argv[])
 		t1 = std::move(t2);
 	}
 
-	Face f1("data/fonts/DroidSans.ttf", 48);
+	Font f1("data/fonts/DroidSans.ttf", 48);
 
 	for(char ch : "Beneath the Surface")
 	{
@@ -41,7 +40,7 @@ int main(int argc, char* argv[])
 		rend.Clear();
 
 
-		Glyph g1(f1, ch);
+		Glyph& g1 = f1.GetGlyph(ch);
 
 		if (not g1.blank)
 		{

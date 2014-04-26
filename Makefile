@@ -3,7 +3,7 @@
 all: BeneathTheSurface
 
 SDL_SRCS=sdl_exception.cpp sdl_init.cpp window.cpp renderer.cpp texture.cpp surface.cpp
-FONT_SRCS=freetype_exception.cpp library.cpp face.cpp glyph.cpp
+FONT_SRCS=freetype_exception.cpp library.cpp face.cpp glyph.cpp font.cpp
 MAIN_SRCS=main.cpp
 
 VPATH=src:src/sdl:src/font
