@@ -9,7 +9,7 @@ Renderer::Renderer(Window &window, int exflags)
 : window(window)
 {
 	Uint32 flags = SDL_RENDERER_ACCELERATED;
-	flags |= SDL_RENDERER_PRESENTVSYNC;
+	//flags |= SDL_RENDERER_PRESENTVSYNC;
 	flags |= exflags;
 
 	renderer = SDL_CreateRenderer(window.GetWindow(), -1, flags);
