@@ -54,6 +54,8 @@ int Font::GetStringWidth(const std::string str)
 		Glyph &g = GetGlyph(ch);
 		width += g.advance;
 	}
+
+	return width;
 }
 
 

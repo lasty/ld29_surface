@@ -6,6 +6,7 @@
 #include "sdl/texture.h"
 
 Renderer::Renderer(Window &window, int exflags)
+: window(window)
 {
 	Uint32 flags = SDL_RENDERER_ACCELERATED;
 	flags |= SDL_RENDERER_PRESENTVSYNC;

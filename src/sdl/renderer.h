@@ -17,6 +17,7 @@ public:
 
 private:
 	SDL_Renderer *renderer = nullptr;
+	Window &window;
 
 public:
 	SDL_Renderer* GetRenderer() const { return renderer; }
@@ -25,6 +26,10 @@ public:
 	void Clear() const;
 	void Copy(const Texture &texture, const SDL_Rect *src, const SDL_Rect *dest);
 	void Flip() const;
+
+	int GetWidth() const { return window.GetWidth(); }
+	int GetHeight() const { return window.GetWidth(); }
+
 };
 
 

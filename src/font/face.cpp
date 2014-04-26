@@ -106,7 +106,7 @@ int Face::GetBearingY() const
 
 int Face::GetAdvance() const
 {
-	return face->glyph->advance.y / 64.0;
+	return face->glyph->advance.x / 64.0;
 }
 
 int Face::GetBitmapWidth() const

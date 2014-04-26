@@ -7,6 +7,7 @@
 #include "sdl/texture.h"
 
 #include "font/font.h"
+#include "font/text.h"
 
 #include <iostream>
 
@@ -18,21 +19,18 @@ int main(int argc, char* argv[])
 	Window window("BeneathTheSurface", 800, 480);
 	Renderer rend(window);
 
-	//test move semantics
-	{
-		Surface s1;
-		Surface s2(128, 128);
-
-		s1 = std::move(s2);
-
-		Texture t1;
-		Texture t2(rend, s1);
-		Texture t3(rend, 128, 128);
-
-		t1 = std::move(t2);
-	}
 
 	Font f1("data/fonts/DroidSans.ttf", 48);
+
+	Text text1(rend, f1, "Release the Kraken");
+
+	rend.SetColour(20, 30, 40, 255);
+	rend.Clear();
+
+	text1.Render(rend, 100, 100);
+
+	rend.Flip();
+	SDL_Delay(1200);
 
 	for(char ch : "Beneath the Surface")
 	{
@@ -45,9 +43,15 @@ int main(int argc, char* argv[])
 		if (not g1.blank)
 		{
 			Texture tg1{rend, g1.GetSurface() };
+			tg1.SetBlend();
 
 			rend.Copy(tg1, nullptr, nullptr);
 		}
+
+		//Texture tgf1{rend, text1.GetSurface() };
+
+		//SDL_Rect p = text1.Place(100,100);
+		//rend.Copy(text1.GetTexture(), nullptr, nullptr);
 
 		rend.Flip();
 		SDL_Delay(200);

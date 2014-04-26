@@ -24,6 +24,7 @@ private:
 	std::map<char, Glyph> glyphs;
 
 public:
+	const Face& GetFace() { return face; }
 
 	bool HasGlyph(char ch);
 	Glyph& GetGlyph(char ch);

@@ -70,3 +70,17 @@ Texture& Texture::operator=(Texture &&moveassign)
 	return *this;
 }
 
+
+void Texture::SetBlend(bool blend)
+{
+	if (blend)
+	{
+		SDL_SetTextureBlendMode(GetTexture(), SDL_BLENDMODE_BLEND);
+	}
+	else
+	{
+		SDL_SetTextureBlendMode(GetTexture(), SDL_BLENDMODE_NONE);
+	}
+}
+
+

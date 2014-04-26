@@ -102,4 +102,12 @@ void Surface::SetPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	pixels[3] = a;
 }
 
+void Surface::Blit(const Surface &surf, SDL_Rect *src, SDL_Rect *dest)
+{
+	int ret = SDL_BlitSurface(surf.GetSurface(), src, surface, dest);
+	if (ret < 0)
+	{
+		throw SDLException("SDL_BlitSurface");
+	}
+}
 

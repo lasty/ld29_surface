@@ -32,6 +32,8 @@ public:
 	int GetWidth() const { return width; }
 	int GetHeight() const { return height; }
 
+	void SetBlend(bool blend = true);
+
 };
 
 

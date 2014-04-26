@@ -4,7 +4,6 @@
 
 Glyph::Glyph(Face &face, const char ch)
 {
-
 	face.LoadAndRender(ch);
 
 	width = face.GetBitmapWidth();
@@ -21,7 +20,8 @@ Glyph::Glyph(Face &face, const char ch)
 		return;
 	}
 
-	surf = Surface{width, height};
+	surf = std::move(Surface{width, height});
+	SDL_SetSurfaceBlendMode(surf.GetSurface(), SDL_BLENDMODE_NONE);
 
 	surf.Lock();
 	for (int y=0; y<height; ++y)
