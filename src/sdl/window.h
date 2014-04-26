@@ -17,6 +17,8 @@ public:
 private:
 	SDL_Window *window;
 
+public:
+	SDL_Window* GetWindow() const { return window; }
 };
 
 
