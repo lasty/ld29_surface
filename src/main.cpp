@@ -6,6 +6,8 @@
 #include "font/font.h"
 #include "font/text.h"
 
+#include "tiles/tile.h"
+
 #include "game_base.h"
 
 #include <iostream>
@@ -29,6 +31,9 @@ public:
 
 	Texture tiles{renderer, "data/tiles.png"};
 
+	Tile t_grass{tiles, 16, 0, 0, 1, 1};
+	Tile t_sand{tiles, 16, 1, 0, 1, 1};
+
 	bool dragging = false;
 	int textx=100;
 	int texty=100;
@@ -38,12 +43,14 @@ public:
 		rend.SetColour(20, 30, 40, 255);
 		rend.Clear();
 
-		SDL_Rect r{0,0, tiles.GetWidth()*2, tiles.GetHeight()*2};
-		renderer.Copy(tiles, nullptr, &r);
+		//SDL_Rect r{0,0, tiles.GetWidth()*2, tiles.GetHeight()*2};
+		//renderer.Copy(tiles, nullptr, &r);
 
 		text1.Render(rend, textx, texty);
 		fps_text.Render(rend, -10, 5);
 
+		t_grass.Render(rend, 0, 0);
+		t_sand.Render(rend, 32, 0);
 	}
 
 	void OnKey(SDL_KeyboardEvent &e, bool down) override

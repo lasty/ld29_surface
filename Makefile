@@ -4,14 +4,15 @@ all: BeneathTheSurface
 
 SDL_SRCS=sdl_exception.cpp sdl_init.cpp window.cpp renderer.cpp texture.cpp surface.cpp
 FONT_SRCS=freetype_exception.cpp library.cpp face.cpp glyph.cpp font.cpp text.cpp
+TILE_SRCS=tile.cpp
 MAIN_SRCS=game_base.cpp main.cpp
 
-VPATH=src:src/sdl:src/font
+VPATH=src:src/sdl:src/font:src/tiles
 CFLAGS+="-Isrc"
 CFLAGS+="-Wall"
 CFLAGS+="-g"
 
-SRCS=${SDL_SRCS} ${FONT_SRCS} ${MAIN_SRCS}
+SRCS=${SDL_SRCS} ${FONT_SRCS} ${TILE_SRCS} ${MAIN_SRCS}
 
 OBJS=${SRCS:.cpp=.o}
 DEPS=${SRCS:.cpp=.d}
