@@ -10,6 +10,7 @@ class Texture
 public:
 	Texture();
 	Texture(const Renderer &rend, int width, int height);
+	Texture(const Renderer &rend, const std::string &filename);
 	Texture(const Renderer &rend, const Surface &surface);
 	~Texture();
 

@@ -9,6 +9,18 @@ Surface::Surface()
 
 }
 
+Surface::Surface(const std::string &filename)
+{
+	surface = IMG_Load(filename.c_str());
+	if (surface == nullptr)
+	{
+		throw SDLException("SDL_CreateRGBSurface");
+	}
+
+	width = surface->w;
+	height = surface->h;
+}
+
 Surface::Surface(int width, int height)
 : width(width)
 , height(height)

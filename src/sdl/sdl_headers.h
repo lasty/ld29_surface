@@ -5,10 +5,12 @@
 
 //Apple uses the framework prefix
 #include <SDL2/SDL.h>
+#include <SDL2_image/SDL_image.h>
 
 #else
 
 #include <SDL.h>
+#include <SDL_image.h>
 
 #ifdef __WIN32__
 //Windows SDL redefines main which screws things up

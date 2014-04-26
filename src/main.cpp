@@ -24,6 +24,8 @@ public:
 
 	Text text1{renderer, f1, "Under the Surface"};
 
+	Texture tiles{renderer, "data/tiles.png"};
+
 	bool dragging = false;
 	int textx=100;
 	int texty=100;
@@ -32,6 +34,9 @@ public:
 	{
 		rend.SetColour(20, 30, 40, 255);
 		rend.Clear();
+
+		SDL_Rect r{0,0, tiles.GetWidth()*2, tiles.GetHeight()*2};
+		renderer.Copy(tiles, nullptr, &r);
 
 		text1.Render(rend, textx, texty);
 	}

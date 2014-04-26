@@ -4,11 +4,13 @@
 
 #include "sdl/sdl_headers.h"
 
+#include <string>
 
 class Surface
 {
 public:
 	Surface();
+	Surface(const std::string &filename);
 	Surface(int width, int height);
 	~Surface();
 

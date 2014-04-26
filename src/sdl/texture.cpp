@@ -25,14 +25,20 @@ Texture::Texture(const Renderer &rend, int width, int height)
 	QueryTextureSize();
 }
 
-void Texture::QueryTextureSize()
+
+Texture::Texture(const Renderer &rend, const std::string &filename)
 {
-	int ret = SDL_QueryTexture(texture, nullptr, nullptr, &width, &height);
-	if (ret < 0)
+	Surface surf { filename };
+
+	texture = SDL_CreateTextureFromSurface(rend.GetRenderer(), surf.GetSurface());
+	if (texture == nullptr)
 	{
-		throw SDLException("SDL_QueryTexture");
+		throw SDLException("SDL_CreateTextureFromSurface");
 	}
+
+	QueryTextureSize();
 }
+
 
 Texture::Texture(const Renderer &rend, const Surface &surface)
 {
@@ -68,6 +74,16 @@ Texture& Texture::operator=(Texture &&moveassign)
 	std::swap(height, moveassign.height);
 
 	return *this;
+}
+
+
+void Texture::QueryTextureSize()
+{
+	int ret = SDL_QueryTexture(texture, nullptr, nullptr, &width, &height);
+	if (ret < 0)
+	{
+		throw SDLException("SDL_QueryTexture");
+	}
 }
 
 
