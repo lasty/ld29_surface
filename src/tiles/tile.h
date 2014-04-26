@@ -7,7 +7,7 @@
 class Tile
 {
 public:
-	Tile(Texture &texture, int gridsize, int x, int y, int xspan=1, int yspan=1, int zoom=2);
+	Tile(Texture &texture, int tilesize, int x, int y, int xspan=1, int yspan=1, int zoom=2);
 
 	Texture *tex_ref;
 

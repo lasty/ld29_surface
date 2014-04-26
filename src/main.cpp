@@ -10,6 +10,7 @@
 
 #include "tiles/map.h"
 
+#include "sprites/sprite.h"
 
 #include "game_base.h"
 
@@ -45,20 +46,29 @@ public:
 
 	Texture tiles{renderer, "data/tiles.png"};
 
+	Texture sprites{renderer, "data/sprites.png"};
+
+	Sprite s_gold{sprites, 32, 0, 0, 1, 1, 2};
+
 	Map worldmap;
 
 	bool dragging = false;
 	int textx=100;
 	int texty=100;
 
+	bool dragging2 = false;
+	int gx = 0;
+	int gy = 0;
+
+
 	void Render(Renderer &rend) override
 	{
 		rend.SetColour(20, 30, 40, 255);
 		rend.Clear();
 
-
 		worldmap.Render(rend, 0, 0);
 
+		s_gold.Render(rend, gx, gy, 0.0f, 1.0f);
 
 		text1.Render(rend, textx, texty);
 		fps_text.Render(rend, -10, 5);
@@ -81,6 +91,13 @@ public:
 		{
 			dragging = false;
 		}
+
+		if (but == 3)
+		{
+			dragging2 = down;
+			gx=x;
+			gy=y;
+		}
 	}
 
 	void OnMouseMove(int x, int y) override
@@ -89,6 +106,12 @@ public:
 		{
 			textx=x;
 			texty=y;
+		}
+
+		if (dragging2)
+		{
+			gx = x;
+			gy = y;
 		}
 	}
 

@@ -24,7 +24,11 @@ public:
 
 	void SetColour(Uint8 r, Uint8 g, Uint8 b, Uint8 a) const;
 	void Clear() const;
+
 	void Copy(const Texture &texture, const SDL_Rect *src, const SDL_Rect *dest);
+	void CopyEx(const Texture &texture, const SDL_Rect *src, const SDL_Rect *dest
+		, double angle, const SDL_Point* center, const SDL_RendererFlip flip = SDL_FLIP_NONE);
+
 	void Flip() const;
 
 	int GetWidth() const { return window.GetWidth(); }
