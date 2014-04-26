@@ -87,7 +87,7 @@ void Surface::Unlock()
 
 void Surface::SetPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
-	if (x<0 or y<0 or x>=width or y>=width)
+	if (x<0 or y<0 or x>=width or y>=height)
 	{
 		throw std::logic_error("SetPixel position out of range");
 	}

@@ -16,7 +16,8 @@ public:
 	Glyph& operator=(const Glyph &copyassign) = delete;
 	Glyph& operator=(Glyph &&moveassign) = default;
 
-	//TODO getters and setters maybe
+	bool blank = false;
+
 	int width = 0;
 	int height = 0;
 

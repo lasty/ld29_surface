@@ -8,6 +8,8 @@ MAIN_SRCS=main.cpp
 
 VPATH=src:src/sdl:src/font
 CFLAGS+="-Isrc"
+CFLAGS+="-Wall"
+CFLAGS+="-g"
 
 SRCS=${SDL_SRCS} ${FONT_SRCS} ${MAIN_SRCS}
 

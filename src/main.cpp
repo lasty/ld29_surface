@@ -6,6 +6,9 @@
 #include "sdl/surface.h"
 #include "sdl/texture.h"
 
+#include "font/face.h"
+#include "font/glyph.h"
+
 #include <iostream>
 
 int main(int argc, char* argv[])
@@ -30,10 +33,26 @@ int main(int argc, char* argv[])
 		t1 = std::move(t2);
 	}
 
-	rend.SetColour(20, 30, 40, 255);
-	rend.Clear();
-	rend.Flip();
-	SDL_Delay(1000);
+	Face f1("data/fonts/DroidSans.ttf", 48);
+
+	for(char ch : "Beneath the Surface")
+	{
+		rend.SetColour(20, 30, 40, 255);
+		rend.Clear();
+
+
+		Glyph g1(f1, ch);
+
+		if (not g1.blank)
+		{
+			Texture tg1{rend, g1.GetSurface() };
+
+			rend.Copy(tg1, nullptr, nullptr);
+		}
+
+		rend.Flip();
+		SDL_Delay(200);
+	}
 
 
 	std::cout << "but beneath the surface" << std::endl;

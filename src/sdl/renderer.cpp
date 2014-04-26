@@ -3,6 +3,7 @@
 
 #include "sdl/sdl_exception.h"
 
+#include "sdl/texture.h"
 
 Renderer::Renderer(Window &window, int exflags)
 {
@@ -37,7 +38,7 @@ void Renderer::Clear() const
 
 void Renderer::Copy(const Texture &texture, const SDL_Rect *src, const SDL_Rect *dest)
 {
-
+	SDL_RenderCopy(renderer, texture.GetTexture(), src, dest);
 }
 
 void Renderer::Flip() const

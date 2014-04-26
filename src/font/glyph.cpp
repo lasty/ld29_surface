@@ -5,17 +5,40 @@
 Glyph::Glyph(Face &face, const char ch)
 {
 
-	//TODO fill this out
+	face.LoadAndRender(ch);
 
-	width = 16;
-	height = 24;
+	width = face.GetBitmapWidth();
+	height = face.GetBitmapHeight();
 
-	bearingx = 4;
-	bearingy = 8;
+	bearingx = face.GetBearingX();
+	bearingy = face.GetBearingY();
 
-	advance = 20;
+	advance = face.GetAdvance();
+
+	if (width == 0 and height == 0)
+	{
+		blank = true;
+		return;
+	}
 
 	surf = Surface{width, height};
+
+	surf.Lock();
+	for (int y=0; y<height; ++y)
+	{
+		for (int x=0; x<width; ++x)
+		{
+			auto grey = face.GetPixel(x,y);
+
+			Uint8 r, g, b, a;
+			r = g = b = 255;
+			a = grey;
+
+			surf.SetPixel(x, y, r, g, b, a);
+		}
+	}
+	surf.Unlock();
+
 }
 
 

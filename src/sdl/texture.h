@@ -10,7 +10,7 @@ class Texture
 public:
 	Texture();
 	Texture(const Renderer &rend, int width, int height);
-	Texture(const Renderer &rend, Surface &surface);
+	Texture(const Renderer &rend, const Surface &surface);
 	~Texture();
 
 	Texture(const Texture &copy) = delete;

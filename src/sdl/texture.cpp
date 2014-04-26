@@ -34,7 +34,7 @@ void Texture::QueryTextureSize()
 	}
 }
 
-Texture::Texture(const Renderer &rend, Surface &surface)
+Texture::Texture(const Renderer &rend, const Surface &surface)
 {
 	texture = SDL_CreateTextureFromSurface(rend.GetRenderer(), surface.GetSurface());
 
