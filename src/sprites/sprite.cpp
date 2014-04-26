@@ -21,11 +21,11 @@ Sprite::Sprite(Texture &texture, int tilesize, int x, int y, int xspan, int yspa
 
 }
 
-void Sprite::Render(Renderer &rend, float x, float y, float rot, float zoom)
+void Sprite::Render(Renderer &rend, float x, float y, float rot, float zoom, SDL_RendererFlip flip)
 {
 	dest.x = x - centerx;
 	dest.y = y - centery;
 
-	rend.CopyEx(*texture_ref, &src, &dest, rot, nullptr, SDL_FLIP_NONE);
+	rend.CopyEx(*texture_ref, &src, &dest, rot, nullptr, flip);
 }
 

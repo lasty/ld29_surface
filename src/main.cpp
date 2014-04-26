@@ -57,8 +57,87 @@ public:
 	int texty=100;
 
 	bool dragging2 = false;
-	int gx = 0;
-	int gy = 0;
+	int gx = 100;
+	int gy = 100;
+
+	float guyx = 100;
+	float guyy = 100;
+	float guyanim = 0.0f;
+
+	bool guywalking = false;
+	bool guywalkdir = false;
+	float setguyx = 100;
+	float setguyy = 100;
+
+	Sprite s_guyidle1{sprites, 64, 0, 2, 1, 1, 1};
+	Sprite s_guyidle2{sprites, 64, 1, 2, 1, 1, 1};
+
+	Sprite s_guywalk1{sprites, 64, 0, 3, 1, 1, 1};
+	Sprite s_guywalk2{sprites, 64, 1, 3, 1, 1, 1};
+
+	void RenderGuy(Renderer &rend)
+	{
+		Sprite *s = nullptr;
+		if (guywalking)
+		{
+			if (guyanim < 0.2f)
+			{
+				s = &s_guywalk1;
+			}
+			else
+			{
+				s = &s_guywalk2;
+			}
+			if (guyanim >= 0.4f) guyanim = 0.0f;
+		}
+		else
+		{
+			if (guyanim < 0.5f)
+			{
+				s = &s_guyidle1;
+			}
+			else
+			{
+				s = &s_guyidle2;
+			}
+		}
+
+		SDL_RendererFlip flip = guywalkdir ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
+
+		s->Render(renderer, guyx, guyy, 0.0f, 1.0f, flip);
+	}
+
+	void UpdateGuy(float dt)
+	{
+		const float speed = 200.0f;
+		guyanim += dt;
+		if (guyanim > 1.0f) guyanim -= 1.0f;
+
+		if (abs(guyx - setguyx) < 1.0f and abs(guyy - setguyy) < 1.0f)
+		{
+			guywalking = false;
+			return;
+		}
+
+		if (abs(guyx - setguyx) >= 1.0f)
+		{
+			if (guyx < setguyx) guyx += dt * speed;
+			else guyx -= dt * speed;
+
+			guywalkdir = (guyx < setguyx);
+		}
+
+		if (abs(guyy - setguyy) >= 1.0f)
+		{
+			if (guyy < setguyy) guyy += dt*speed;
+			else guyy -= dt * speed;
+		}
+	}
+
+	void Update(float dt) override
+	{
+		UpdateGuy(dt);
+	}
 
 
 	void Render(Renderer &rend) override
@@ -70,6 +149,7 @@ public:
 
 		s_gold.Render(rend, gx, gy, 0.0f, 1.0f);
 
+		RenderGuy(rend);
 		text1.Render(rend, textx, texty);
 		fps_text.Render(rend, -10, 5);
 	}
@@ -83,13 +163,15 @@ public:
 	{
 		if (but == 1 and down)
 		{
-			dragging = true;
+			setguyx = x;
+			setguyy = y;
+			guywalking=true;
+		}
+		if (but == 2)
+		{
+			dragging = down;
 			textx=x;
 			texty=y;
-		}
-		if (but == 1 and not down)
-		{
-			dragging = false;
 		}
 
 		if (but == 3)

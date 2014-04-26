@@ -18,7 +18,7 @@ public:
 	int centerx = 0;
 	int centery = 0;
 
-	void Render(Renderer &rend, float x, float y, float rot, float zoom);
+	void Render(Renderer &rend, float x, float y, float rot, float zoom, SDL_RendererFlip flip = SDL_FLIP_NONE);
 };
 
 
