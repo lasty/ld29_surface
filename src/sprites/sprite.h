@@ -9,6 +9,7 @@ class Sprite
 public:
 
 	Sprite(Texture &texture, int tilesize, int x, int y, int xspan=1, int yspan=1, int zoom=2);
+	Sprite(Texture &texture, int tilesize, int x, int y, int xspan, int yspan, int zoom, int centerx, int centery);
 
 	Texture *texture_ref = nullptr;
 

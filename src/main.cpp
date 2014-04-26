@@ -14,6 +14,8 @@
 
 #include "game_base.h"
 
+#include <glm/glm.hpp>
+
 #include <iostream>
 #include <sstream>
 
@@ -52,11 +54,13 @@ public:
 
 	Map worldmap;
 
-	bool dragging = false;
+	bool dragging1 = false;
+	bool dragging2 = false;
+	bool dragging3 = false;
+
 	int textx=100;
 	int texty=100;
 
-	bool dragging2 = false;
 	int gx = 100;
 	int gy = 100;
 
@@ -69,11 +73,11 @@ public:
 	float setguyx = 100;
 	float setguyy = 100;
 
-	Sprite s_guyidle1{sprites, 64, 0, 2, 1, 1, 1};
-	Sprite s_guyidle2{sprites, 64, 1, 2, 1, 1, 1};
+	Sprite s_guyidle1{sprites, 64, 0, 2, 1, 1, 1, 32, 58};
+	Sprite s_guyidle2{sprites, 64, 1, 2, 1, 1, 1, 32, 58};
 
-	Sprite s_guywalk1{sprites, 64, 0, 3, 1, 1, 1};
-	Sprite s_guywalk2{sprites, 64, 1, 3, 1, 1, 1};
+	Sprite s_guywalk1{sprites, 64, 0, 3, 1, 1, 1, 32, 58};
+	Sprite s_guywalk2{sprites, 64, 1, 3, 1, 1, 1, 32, 58};
 
 	void RenderGuy(Renderer &rend)
 	{
@@ -113,7 +117,14 @@ public:
 		guyanim += dt;
 		if (guyanim > 1.0f) guyanim -= 1.0f;
 
-		if (abs(guyx - setguyx) < 1.0f and abs(guyy - setguyy) < 1.0f)
+
+		glm::vec2 guy{guyx, guyy};
+
+		glm::vec2 dest{setguyx, setguyy};
+
+		float distance = glm::distance(guy, dest);
+
+		if (distance < 1.0f)
 		{
 			guywalking = false;
 			return;
@@ -121,17 +132,16 @@ public:
 
 		if (abs(guyx - setguyx) >= 1.0f)
 		{
-			if (guyx < setguyx) guyx += dt * speed;
-			else guyx -= dt * speed;
-
 			guywalkdir = (guyx < setguyx);
 		}
 
-		if (abs(guyy - setguyy) >= 1.0f)
-		{
-			if (guyy < setguyy) guyy += dt*speed;
-			else guyy -= dt * speed;
-		}
+		glm::vec2 dir = glm::normalize(dest - guy);
+
+		guy += dir *  (dt * speed);
+
+		guyx = guy.x;
+		guyy = guy.y;
+
 	}
 
 	void Update(float dt) override
@@ -161,22 +171,23 @@ public:
 
 	void OnMouseButton(int x, int y, int but, bool down) override
 	{
-		if (but == 1 and down)
+		if (but == 1)
 		{
+			dragging1 = down;
 			setguyx = x;
 			setguyy = y;
 			guywalking=true;
 		}
 		if (but == 2)
 		{
-			dragging = down;
+			dragging2 = down;
 			textx=x;
 			texty=y;
 		}
 
 		if (but == 3)
 		{
-			dragging2 = down;
+			dragging3 = down;
 			gx=x;
 			gy=y;
 		}
@@ -184,13 +195,20 @@ public:
 
 	void OnMouseMove(int x, int y) override
 	{
-		if (dragging)
+		if (dragging1)
+		{
+			setguyx = x;
+			setguyy = y;
+			guywalking=true;
+		}
+
+		if (dragging2)
 		{
 			textx=x;
 			texty=y;
 		}
 
-		if (dragging2)
+		if (dragging3)
 		{
 			gx = x;
 			gy = y;

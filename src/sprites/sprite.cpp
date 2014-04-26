@@ -21,6 +21,13 @@ Sprite::Sprite(Texture &texture, int tilesize, int x, int y, int xspan, int yspa
 
 }
 
+Sprite::Sprite(Texture &texture, int tilesize, int x, int y, int xspan, int yspan, int zoom, int centerx, int centery)
+: Sprite(texture, tilesize, x, y, xspan, yspan, zoom)
+{
+	this->centerx = centerx * zoom;
+	this->centery = centery * zoom;
+}
+
 void Sprite::Render(Renderer &rend, float x, float y, float rot, float zoom, SDL_RendererFlip flip)
 {
 	dest.x = x - centerx;
