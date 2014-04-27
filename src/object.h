@@ -12,7 +12,11 @@ class Object
 public:
 	Object(glm::vec3 position, float radius, AnimatedSprite &aspr, const std::string &anim);
 	Object(glm::vec3 position, float radius, Sprite &spr);
+	virtual ~Object();
 
+protected:
+	bool deleteme = false;
+	friend class World;
 
 private:
 	glm::vec3 position;
@@ -32,10 +36,13 @@ public:
 
 	virtual void Render(Renderer &rend);
 
+	virtual void Collide(Object &o2);
+
+	virtual void MarkForDeletion(bool d) { deleteme = d; }
 	void SetFlip(bool flip);
 
 	const glm::vec3 & GetPosition() const { return position; }
-	const glm::vec2 GetPosition2() const { return glm::vec2{position.x, position.y}; }
+	glm::vec2 GetPosition2() const { return glm::vec2{position.x, position.y}; }
 	float GetRadius() const { return radius; }
 
 	void SetPosition2(const glm::vec2 pos2);

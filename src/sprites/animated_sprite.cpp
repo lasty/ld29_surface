@@ -12,6 +12,10 @@ void AnimatedSprite::AddFrame(const std::string &name, Sprite &&frame, float del
 	animation_times[name] += delay;  //gets constructed at zero, or recalls last value
 }
 
+//#include <iostream>
+//using std::cout;
+//using std::endl;
+
 Sprite & AnimatedSprite::GetFrame(const std::string &animation_name, float time)
 {
 	auto &animation = animations.at(animation_name);
@@ -19,9 +23,11 @@ Sprite & AnimatedSprite::GetFrame(const std::string &animation_name, float time)
 
 	if (animation.size() == 0) throw std::logic_error("This animation has no frames");
 
+	//cout << "animation " << animation_name << " has " << animation.size() << " frames." << endl;
 	float elapsed = 0.0f;
 
-	while (time > looptime)
+	//cout << "loop time =  " << looptime << "  current time = " << time << endl;
+	while (time >= looptime)
 	{
 		time -= looptime;
 	}
@@ -30,11 +36,11 @@ Sprite & AnimatedSprite::GetFrame(const std::string &animation_name, float time)
 	{
 		for (auto & frame : animation)
 		{
+			elapsed += frame.delay;
 			if (elapsed >= time)
 			{
 				return frame.frame;
 			}
-			elapsed += frame.delay;
 		}
 	}
 

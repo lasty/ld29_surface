@@ -21,6 +21,13 @@ Object::Object(glm::vec3 position, float radius, Sprite &spr)
 
 }
 
+
+Object::~Object()
+{
+
+}
+
+
 void Object::PlayAnimation(const std::string &newanim)
 {
 	animation = newanim;
@@ -63,6 +70,12 @@ void Object::SetPosition2(const glm::vec2 pos2)
 {
 	position.x = pos2.x;
 	position.y = pos2.y;
+}
+
+
+void Object::Collide(Object &o2)
+{
+
 }
 
 

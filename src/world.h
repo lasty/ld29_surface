@@ -12,19 +12,26 @@ class World
 {
 public:
 	World(Renderer &rend);
+	~World();
 
 private:
 	Texture tiles;
 	Map worldmap;
 
+	bool locked = false;
+
 	std::vector<std::unique_ptr<Object>> objects;
 
+	std::vector<std::unique_ptr<Object>> new_objects;
 public:
 	void Update(float dt);
 
+	void DoCollide(Object &o1, Object &o2);
 	void CheckForCollisions();
+	void CheckForCollisionsFrom(Object &o);
 
 	void CheckForDeadObjects();
+	void CheckForNewObjects();
 
 	void Render(Renderer &rend);
 
@@ -32,7 +39,7 @@ public:
 
 	void RenderObjects(Renderer &rend);
 
-	void AddObject(std::unique_ptr<Object> &&obj);
+	void AddObject(Object *obj);
 
 };
 

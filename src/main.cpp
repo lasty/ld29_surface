@@ -21,7 +21,11 @@
 #include <glm/glm.hpp>
 
 #include <iostream>
+using std::cout;
+using std::endl;
+
 #include <sstream>
+#include <memory>
 
 class AnimatedGuy : public AnimatedSprite
 {
@@ -33,11 +37,67 @@ public:
 	: sprites{renderer, "data/sprites.png"}
 	{
 		AddFrame("idle", Sprite{sprites, 64, 0, 2, 1, 1, 1, 32, 58}, 0.5f);
-		AddFrame("idle", Sprite{sprites, 64, 1, 2, 1, 1, 1, 32, 58}, 0.5f);
+		AddFrame("idle", Sprite{sprites, 64, 1, 2, 1, 1, 1, 32, 58}, 0.6f);
 
 		AddFrame("walk", {sprites, 64, 0, 3, 1, 1, 1, 32, 58}, 0.2f);
 		AddFrame("walk", {sprites, 64, 1, 3, 1, 1, 1, 32, 58}, 0.2f);
 	}
+};
+
+
+class SpriteList
+{
+private:
+	std::map<std::string, Sprite> list;
+
+	Texture texture;
+
+public:
+	SpriteList(Renderer &rend)
+	: texture(rend, "data/sprites.png")
+	{
+		list.emplace( std::make_pair("gold", Sprite{texture, 32, 0, 0, 1, 1, 2}) );
+	}
+
+	Sprite &GetSprite(const std::string s)
+	{
+		return (list.at(s));
+	}
+};
+
+
+class GoldObject : public Object
+{
+public:
+	GoldObject(int x, int y, Sprite &s)
+	:Object(glm::vec3{x, y, 0}, 16.0, s)
+	{
+		//cout << "Making gold!" << endl;
+	}
+
+	~GoldObject()
+	{
+		//cout << "Deleting gold" << endl;
+	}
+};
+
+
+class TestGame;
+
+class GuyObject : public Object
+{
+public:
+	GuyObject(TestGame *tg, AnimatedSprite &anim)
+	: Object ( glm::vec3{0.0f, 0.0f, 0.0f}, 16.0f, anim, "idle" )
+	, tg(tg)
+	{
+
+	}
+
+	TestGame *tg = nullptr;
+
+	void Collide(Object &o) override;
+
 };
 
 
@@ -70,9 +130,6 @@ public:
 
 	Texture tiles{renderer, "data/tiles.png"};
 
-	Texture sprites{renderer, "data/sprites.png"};
-
-	Sprite s_gold{sprites, 32, 0, 0, 1, 1, 2};
 
 	World world {renderer};
 
@@ -91,13 +148,12 @@ public:
 	float guywalkdist = 0.0f;
 
 	bool guywalking = false;
-	bool guywalkdir = false;
 	float setguyx = 100;
 	float setguyy = 100;
 
 	AnimatedGuy guy_animsprite { renderer };
 
-	Object Guy{ glm::vec3{0.0f, 0.0f, 0.0f}, 16.0f, guy_animsprite, "idle" };
+	GuyObject Guy{ this, guy_animsprite };
 
 	Circle circle1{1.0f, 16, false};
 	Circle circle2{1.0f, 16, true};
@@ -109,6 +165,8 @@ public:
 
 	void InitGuy()
 	{
+		guywalking = true;
+		Guy.PlayAnimation("idle");
 	}
 
 	void PlaySound()
@@ -121,22 +179,12 @@ public:
 		sound_walk2.Play();
 	}
 
+	SpriteList sprite_list{renderer};
+
 	int gold_nuggets = 0;
 
 	void RenderGuy(Renderer &rend)
 	{
-
-//		std::string anim = "idle";
-//		if (guywalking)
-//		{
-//			anim = "walk";
-//		}
-
-
-//		Sprite &s = Guy.GetFrame(anim, guyanim);
-
-//		SDL_RendererFlip flip = guywalkdir ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
-
 		if (draw_radii)
 		{
 			circle2.Render(renderer, Guy);
@@ -154,16 +202,34 @@ public:
 		gold_score_text.SetText(renderer, smallfont, msg.str());
 	}
 
-	void NewNugget()
+	void NewNugget(int num = 10)
 	{
-		gx = rand() % 500 + 100;
-		gy = rand() % 300 + 100;
+		for (int i=0; i<num; ++i)
+		{
+			int gx = rand() % 500 + 100;
+			int gy = rand() % 300 + 100;
+
+			Sprite &gspr = sprite_list.GetSprite("gold");
+			Object * nug = new GoldObject(gx, gy, gspr);
+
+			world.AddObject(nug);
+		}
 	}
 
-	float nugget_radius = 16.0f;
+	void GotNugget(Object &o)
+	{
+		o.MarkForDeletion(true);
+
+		gold_nuggets++;
+		PlaySound();
+		UpdateScore();
+		NewNugget(1);
+	}
+
 
 	void CheckCollision()
 	{
+/*
 		glm::vec2 nugget_pos{gx, gy};
 		glm::vec2 player_pos = Guy.GetPosition2();
 
@@ -176,12 +242,9 @@ public:
 
 		if (dist < 0)
 		{
-			gold_nuggets++;
-			PlaySound();
-			UpdateScore();
-			NewNugget();
 		}
 
+*/
 
 	}
 
@@ -212,6 +275,7 @@ public:
 		{
 			if (guywalking)
 			{
+				Guy.PlayAnimation("idle");
 				GuyStepSound();
 			}
 			guywalking = false;
@@ -233,6 +297,8 @@ public:
 
 	void Update(float dt) override
 	{
+		world.CheckForCollisionsFrom(Guy);
+
 		world.Update(dt);
 
 		UpdateGuy(dt);
@@ -251,10 +317,8 @@ public:
 		if (draw_radii)
 		{
 			circle1.SetColour(244, 199, 17, 128);
-			circle1.Render(rend, gx, gy, 16);
+//			circle1.Render(rend, gx, gy, 16);
 		}
-
-		s_gold.Render(rend, gx, gy, 0.0f, 1.0f);
 
 		RenderGuy(rend);
 		text1.Render(rend, textx, texty);
@@ -268,6 +332,8 @@ public:
 		if (e.keysym.sym == SDLK_q or e.keysym.sym==SDLK_ESCAPE) Quit();
 
 		else if (e.keysym.sym == SDLK_r and down) { draw_radii = not draw_radii; }
+
+		else if (e.keysym.sym == SDLK_g and down) { NewNugget(); }
 	}
 
 	void OnMouseButton(int x, int y, int but, bool down) override
@@ -279,6 +345,7 @@ public:
 			setguyy = y;
 			if (not guywalking) { GuyStepSound(); }
 			guywalking=true;
+			Guy.PlayAnimation("walk");
 		}
 		if (but == 2)
 		{
@@ -287,12 +354,13 @@ public:
 			texty=y;
 		}
 
-		if (but == 3)
+/*		if (but == 3)
 		{
 			dragging3 = down;
 			gx=x;
 			gy=y;
 		}
+*/
 	}
 
 	void OnMouseMove(int x, int y) override
@@ -311,11 +379,13 @@ public:
 			texty=y;
 		}
 
+/*
 		if (dragging3)
 		{
 			gx = x;
 			gy = y;
 		}
+*/
 	}
 
 	void OnFPS(int frames) override
@@ -326,6 +396,12 @@ public:
 		fps_text.SetText(renderer, smallfont, s.str());
 	}
 };
+
+
+void GuyObject::Collide(Object &o)
+{
+	tg->GotNugget(o);
+}
 
 
 
