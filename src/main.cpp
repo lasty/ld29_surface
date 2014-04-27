@@ -109,7 +109,7 @@ public:
 	: Game_Base(title, w, h)
 	{
 
-		NewNugget();
+		NewNugget(10);
 		UpdateScore();
 
 		InitGuy();
@@ -156,7 +156,7 @@ public:
 	GuyObject Guy{ this, guy_animsprite };
 
 	Circle circle1{1.0f, 16, false};
-	Circle circle2{1.0f, 16, true};
+	Circle circle2{1.0f, 16, false};
 
 
 	Sound sound1{"data/sounds/beep1.wav"};
@@ -187,7 +187,7 @@ public:
 	{
 		if (draw_radii)
 		{
-			circle2.Render(renderer, Guy);
+			//circle2.Render(renderer, Guy);
 		}
 
 		Guy.Render(rend);
@@ -202,7 +202,7 @@ public:
 		gold_score_text.SetText(renderer, smallfont, msg.str());
 	}
 
-	void NewNugget(int num = 10)
+	void NewNugget(int num = 1)
 	{
 		for (int i=0; i<num; ++i)
 		{
@@ -333,7 +333,7 @@ public:
 
 		else if (e.keysym.sym == SDLK_r and down) { draw_radii = not draw_radii; }
 
-		else if (e.keysym.sym == SDLK_g and down) { NewNugget(); }
+		else if (e.keysym.sym == SDLK_g and down) { NewNugget(10); }
 	}
 
 	void OnMouseButton(int x, int y, int but, bool down) override
