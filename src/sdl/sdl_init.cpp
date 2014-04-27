@@ -27,10 +27,10 @@ SDL2::SDL2()
 	*/
 
 
-	const int freq = 22050;//44100;
+	const int freq = 44100;
 	const auto format = MIX_DEFAULT_FORMAT; //AUDIO_S16;
 	const int channels = 2;
-	const int chunksize = 2048;//4096;
+	const int chunksize = 1024; //2048;//4096;
 	int mixret = Mix_OpenAudio(freq, format, channels, chunksize);
 
 	if (mixret == -1 )
