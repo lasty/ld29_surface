@@ -7,13 +7,14 @@
 #include "font/font.h"
 #include "font/text.h"
 
-#include "tiles/tile.h"
-
-#include "tiles/map.h"
 
 #include "sprites/sprite.h"
 #include "sprites/circle.h"
 #include "sprites/animated_sprite.h"
+
+#include "world.h"
+
+#include "object.h"
 
 #include "game_base.h"
 
@@ -22,24 +23,31 @@
 #include <iostream>
 #include <sstream>
 
+class AnimatedGuy : public AnimatedSprite
+{
+private:
+	Texture sprites;
+
+public:
+	AnimatedGuy(Renderer &renderer)
+	: sprites{renderer, "data/sprites.png"}
+	{
+		AddFrame("idle", Sprite{sprites, 64, 0, 2, 1, 1, 1, 32, 58}, 0.5f);
+		AddFrame("idle", Sprite{sprites, 64, 1, 2, 1, 1, 1, 32, 58}, 0.5f);
+
+		AddFrame("walk", {sprites, 64, 0, 3, 1, 1, 1, 32, 58}, 0.2f);
+		AddFrame("walk", {sprites, 64, 1, 3, 1, 1, 1, 32, 58}, 0.2f);
+	}
+};
+
+
+
 class TestGame : public Game_Base
 {
 public:
 	TestGame(const std::string &title, int w, int h)
 	: Game_Base(title, w, h)
 	{
-		Tile t_grass{tiles, 32, 0, 0, 1, 1, 2};
-		Tile t_sand{tiles, 32, 1, 0, 1, 1, 2};
-
-		worldmap.NewTileDef("grass", std::move(t_grass));
-		worldmap.NewTileDef("sand", std::move(t_sand));
-
-		worldmap.NewMap(13, 7, 64, "grass");
-
-		for (int i=0; i<10; i++)
-		{
-			worldmap.SetTile(i, 2, "sand");
-		}
 
 		NewNugget();
 		UpdateScore();
@@ -66,7 +74,7 @@ public:
 
 	Sprite s_gold{sprites, 32, 0, 0, 1, 1, 2};
 
-	Map worldmap;
+	World world {renderer};
 
 	bool draw_radii = true;
 
@@ -80,9 +88,6 @@ public:
 	int gx = 100;
 	int gy = 100;
 
-	float guyx = 100;
-	float guyy = 100;
-	float guyanim = 0.0f;
 	float guywalkdist = 0.0f;
 
 	bool guywalking = false;
@@ -90,7 +95,9 @@ public:
 	float setguyx = 100;
 	float setguyy = 100;
 
-	AnimatedSprite Guy;
+	AnimatedGuy guy_animsprite { renderer };
+
+	Object Guy{ glm::vec3{0.0f, 0.0f, 0.0f}, 16.0f, guy_animsprite, "idle" };
 
 	Circle circle1{1.0f, 16, false};
 	Circle circle2{1.0f, 16, true};
@@ -102,13 +109,6 @@ public:
 
 	void InitGuy()
 	{
-
-		Guy.AddFrame("idle", Sprite{sprites, 64, 0, 2, 1, 1, 1, 32, 58}, 0.5f);
-		Guy.AddFrame("idle", Sprite{sprites, 64, 1, 2, 1, 1, 1, 32, 58}, 0.5f);
-
-		Guy.AddFrame("walk", {sprites, 64, 0, 3, 1, 1, 1, 32, 58}, 0.2f);
-		Guy.AddFrame("walk", {sprites, 64, 1, 3, 1, 1, 1, 32, 58}, 0.2f);
-
 	}
 
 	void PlaySound()
@@ -126,22 +126,24 @@ public:
 	void RenderGuy(Renderer &rend)
 	{
 
-		std::string anim = "idle";
-		if (guywalking)
-		{
-			anim = "walk";
-		}
+//		std::string anim = "idle";
+//		if (guywalking)
+//		{
+//			anim = "walk";
+//		}
 
-		Sprite &s = Guy.GetFrame(anim, guyanim);
 
-		SDL_RendererFlip flip = guywalkdir ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
+//		Sprite &s = Guy.GetFrame(anim, guyanim);
+
+//		SDL_RendererFlip flip = guywalkdir ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
 
 		if (draw_radii)
 		{
-			circle2.Render(renderer, guyx, guyy, 32);
+			circle2.Render(renderer, Guy);
 		}
 
-		s.Render(renderer, guyx, guyy, 0.0f, 1.0f, flip);
+		Guy.Render(rend);
+//		s.Render(renderer, guyx, guyy, 0.0f, 1.0f, flip);
 	}
 
 	void UpdateScore()
@@ -159,12 +161,13 @@ public:
 	}
 
 	float nugget_radius = 16.0f;
-	float player_radius = 32.0f;
 
 	void CheckCollision()
 	{
 		glm::vec2 nugget_pos{gx, gy};
-		glm::vec2 player_pos{guyx, guyy};
+		glm::vec2 player_pos = Guy.GetPosition2();
+
+		float player_radius = Guy.GetRadius();
 
 		float dist = glm::distance(player_pos, nugget_pos);
 
@@ -173,7 +176,6 @@ public:
 
 		if (dist < 0)
 		{
-			std::cout << "Nugget get!" << std::endl;
 			gold_nuggets++;
 			PlaySound();
 			UpdateScore();
@@ -186,7 +188,9 @@ public:
 	void UpdateGuy(float dt)
 	{
 		const float speed = 200.0f;
-		guyanim += dt;
+
+		Guy.Update(dt);
+
 		if (guywalking)
 		{
 			guywalkdist+=dt;
@@ -198,7 +202,7 @@ public:
 		}
 
 
-		glm::vec2 guy{guyx, guyy};
+		glm::vec2 guy = Guy.GetPosition2();
 
 		glm::vec2 dest{setguyx, setguyy};
 
@@ -214,22 +218,23 @@ public:
 			return;
 		}
 
-		if (abs(guyx - setguyx) >= 1.0f)
+		if (distance >= 1.0f)
 		{
-			guywalkdir = (guyx < setguyx);
+			Guy.SetFlip(not (guy.x < setguyx));
 		}
 
 		glm::vec2 dir = glm::normalize(dest - guy);
 
 		guy += dir *  (dt * speed);
 
-		guyx = guy.x;
-		guyy = guy.y;
+		Guy.SetPosition2(guy);
 
 	}
 
 	void Update(float dt) override
 	{
+		world.Update(dt);
+
 		UpdateGuy(dt);
 
 		CheckCollision();
@@ -241,7 +246,7 @@ public:
 		rend.SetColour(20, 30, 40, 255);
 		rend.Clear();
 
-		worldmap.Render(rend, 0, 0);
+		world.Render(rend);
 
 		if (draw_radii)
 		{

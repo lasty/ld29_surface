@@ -1,8 +1,11 @@
 
 #include "sprites/circle.h"
 
+#include "object.h"
+
 #include "sdl/sdl_headers.h"
 #include "sdl/sdl_exception.h"
+
 
 Circle::Circle(float radius, int num_points, bool elipse)
 {
@@ -47,4 +50,11 @@ void Circle::Render(Renderer &rend, int x, int y, int zoom)
 	}
 }
 
+void Circle::Render(Renderer &rend, Object &obj)
+{
+	auto pos = obj.GetPosition();
+	auto radius = obj.GetRadius();
+
+	Render(rend, pos.x, pos.y, radius);
+}
 

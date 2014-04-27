@@ -4,8 +4,9 @@
 #include <vector>
 #include <map>
 
+#include "tile.h"
+
 class Map;
-class Tile;
 class Renderer;
 
 

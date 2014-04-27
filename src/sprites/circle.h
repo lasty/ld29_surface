@@ -7,6 +7,7 @@
 
 #include <vector>
 
+class Object;
 
 class Circle
 {
@@ -21,6 +22,7 @@ private:
 public:
 	void SetColour(int r, int g, int b, int a);
 	void Render(Renderer &rend, int x, int y, int zoom);
+	void Render(Renderer &rend, Object &obj);
 };
 
 
