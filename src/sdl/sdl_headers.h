@@ -6,11 +6,13 @@
 //Apple uses the framework prefix
 #include <SDL2/SDL.h>
 #include <SDL2_image/SDL_image.h>
+#include <SDL2_mixer/SDL_mixer.h>
 
 #else
 
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_mixer.h>
 
 #ifdef __WIN32__
 //Windows SDL redefines main which screws things up

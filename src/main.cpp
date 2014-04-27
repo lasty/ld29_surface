@@ -2,6 +2,7 @@
 
 #include "sdl/surface.h"
 #include "sdl/texture.h"
+#include "sdl/sound.h"
 
 #include "font/font.h"
 #include "font/text.h"
@@ -41,6 +42,10 @@ public:
 
 		NewNugget();
 		UpdateScore();
+	}
+
+	~TestGame()
+	{
 	}
 
 	Font f1{"data/fonts/DroidSans.ttf", 48};
@@ -89,6 +94,15 @@ public:
 
 	Circle circle1{1.0f, 16, false};
 	Circle circle2{1.0f, 16, true};
+
+
+	Sound sound1{"data/sounds/beep1.wav"};
+
+
+	void PlaySound()
+	{
+		sound1.Play(); //Mix_PlayChannel(-1, sound1, 0);
+	}
 
 	int gold_nuggets = 0;
 
@@ -160,6 +174,7 @@ public:
 		{
 			std::cout << "Nugget get!" << std::endl;
 			gold_nuggets++;
+			PlaySound();
 			UpdateScore();
 			NewNugget();
 		}

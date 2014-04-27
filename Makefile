@@ -2,7 +2,7 @@
 .PHONY: all
 all: BeneathTheSurface
 
-SDL_SRCS=sdl_exception.cpp sdl_init.cpp window.cpp renderer.cpp texture.cpp surface.cpp
+SDL_SRCS=sdl_exception.cpp sdl_init.cpp window.cpp renderer.cpp texture.cpp surface.cpp sound.cpp
 FONT_SRCS=freetype_exception.cpp library.cpp face.cpp glyph.cpp font.cpp text.cpp
 TILE_SRCS=tile.cpp map.cpp
 SPRITE_SRCS=sprite.cpp circle.cpp
