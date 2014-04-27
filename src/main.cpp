@@ -11,6 +11,7 @@
 #include "tiles/map.h"
 
 #include "sprites/sprite.h"
+#include "sprites/circle.h"
 
 #include "game_base.h"
 
@@ -31,12 +32,15 @@ public:
 		worldmap.NewTileDef("grass", std::move(t_grass));
 		worldmap.NewTileDef("sand", std::move(t_sand));
 
-		worldmap.NewMap(10, 10, 64, "grass");
+		worldmap.NewMap(13, 7, 64, "grass");
 
 		for (int i=0; i<10; i++)
 		{
 			worldmap.SetTile(i, 2, "sand");
 		}
+
+		NewNugget();
+		UpdateScore();
 	}
 
 	Font f1{"data/fonts/DroidSans.ttf", 48};
@@ -46,6 +50,8 @@ public:
 
 	Text fps_text{renderer, smallfont, "-"};
 
+	Text gold_score_text{renderer, smallfont, ""};
+
 	Texture tiles{renderer, "data/tiles.png"};
 
 	Texture sprites{renderer, "data/sprites.png"};
@@ -54,12 +60,14 @@ public:
 
 	Map worldmap;
 
+	bool draw_radii = true;
+
 	bool dragging1 = false;
 	bool dragging2 = false;
 	bool dragging3 = false;
 
 	int textx=100;
-	int texty=100;
+	int texty=10;
 
 	int gx = 100;
 	int gy = 100;
@@ -78,6 +86,11 @@ public:
 
 	Sprite s_guywalk1{sprites, 64, 0, 3, 1, 1, 1, 32, 58};
 	Sprite s_guywalk2{sprites, 64, 1, 3, 1, 1, 1, 32, 58};
+
+	Circle circle1{1.0f, 16, false};
+	Circle circle2{1.0f, 16, true};
+
+	int gold_nuggets = 0;
 
 	void RenderGuy(Renderer &rend)
 	{
@@ -108,7 +121,50 @@ public:
 
 		SDL_RendererFlip flip = guywalkdir ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
 
+		if (draw_radii)
+		{
+			circle2.Render(renderer, guyx, guyy, 32);
+		}
+
 		s->Render(renderer, guyx, guyy, 0.0f, 1.0f, flip);
+	}
+
+	void UpdateScore()
+	{
+		std::ostringstream msg;
+		msg << "Gold: " << gold_nuggets;
+
+		gold_score_text.SetText(renderer, smallfont, msg.str());
+	}
+
+	void NewNugget()
+	{
+		gx = rand() % 500 + 100;
+		gy = rand() % 300 + 100;
+	}
+
+	float nugget_radius = 16.0f;
+	float player_radius = 32.0f;
+
+	void CheckCollision()
+	{
+		glm::vec2 nugget_pos{gx, gy};
+		glm::vec2 player_pos{guyx, guyy};
+
+		float dist = glm::distance(player_pos, nugget_pos);
+
+		dist -= nugget_radius;
+		dist -= player_radius;
+
+		if (dist < 0)
+		{
+			std::cout << "Nugget get!" << std::endl;
+			gold_nuggets++;
+			UpdateScore();
+			NewNugget();
+		}
+
+
 	}
 
 	void UpdateGuy(float dt)
@@ -147,6 +203,8 @@ public:
 	void Update(float dt) override
 	{
 		UpdateGuy(dt);
+
+		CheckCollision();
 	}
 
 
@@ -157,16 +215,26 @@ public:
 
 		worldmap.Render(rend, 0, 0);
 
+		if (draw_radii)
+		{
+			circle1.SetColour(244, 199, 17, 128);
+			circle1.Render(rend, gx, gy, 16);
+		}
+
 		s_gold.Render(rend, gx, gy, 0.0f, 1.0f);
 
 		RenderGuy(rend);
 		text1.Render(rend, textx, texty);
 		fps_text.Render(rend, -10, 5);
+
+		gold_score_text.Render(rend, 10, -5);
 	}
 
 	void OnKey(SDL_KeyboardEvent &e, bool down) override
 	{
 		if (e.keysym.sym == SDLK_q or e.keysym.sym==SDLK_ESCAPE) Quit();
+
+		else if (e.keysym.sym == SDLK_r and down) { draw_radii = not draw_radii; }
 	}
 
 	void OnMouseButton(int x, int y, int but, bool down) override
