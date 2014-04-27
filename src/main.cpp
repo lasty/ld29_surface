@@ -13,6 +13,7 @@
 
 #include "sprites/sprite.h"
 #include "sprites/circle.h"
+#include "sprites/animated_sprite.h"
 
 #include "game_base.h"
 
@@ -42,6 +43,8 @@ public:
 
 		NewNugget();
 		UpdateScore();
+
+		InitGuy();
 	}
 
 	~TestGame()
@@ -86,11 +89,7 @@ public:
 	float setguyx = 100;
 	float setguyy = 100;
 
-	Sprite s_guyidle1{sprites, 64, 0, 2, 1, 1, 1, 32, 58};
-	Sprite s_guyidle2{sprites, 64, 1, 2, 1, 1, 1, 32, 58};
-
-	Sprite s_guywalk1{sprites, 64, 0, 3, 1, 1, 1, 32, 58};
-	Sprite s_guywalk2{sprites, 64, 1, 3, 1, 1, 1, 32, 58};
+	AnimatedSprite Guy;
 
 	Circle circle1{1.0f, 16, false};
 	Circle circle2{1.0f, 16, true};
@@ -98,6 +97,16 @@ public:
 
 	Sound sound1{"data/sounds/beep1.wav"};
 
+	void InitGuy()
+	{
+
+		Guy.AddFrame("idle", Sprite{sprites, 64, 0, 2, 1, 1, 1, 32, 58}, 0.5f);
+		Guy.AddFrame("idle", Sprite{sprites, 64, 1, 2, 1, 1, 1, 32, 58}, 0.5f);
+
+		Guy.AddFrame("walk", {sprites, 64, 0, 3, 1, 1, 1, 32, 58}, 0.2f);
+		Guy.AddFrame("walk", {sprites, 64, 1, 3, 1, 1, 1, 32, 58}, 0.2f);
+
+	}
 
 	void PlaySound()
 	{
@@ -108,30 +117,14 @@ public:
 
 	void RenderGuy(Renderer &rend)
 	{
-		Sprite *s = nullptr;
+
+		std::string anim = "idle";
 		if (guywalking)
 		{
-			if (guyanim < 0.2f)
-			{
-				s = &s_guywalk1;
-			}
-			else
-			{
-				s = &s_guywalk2;
-			}
-			if (guyanim >= 0.4f) guyanim = 0.0f;
+			anim = "walk";
 		}
-		else
-		{
-			if (guyanim < 0.5f)
-			{
-				s = &s_guyidle1;
-			}
-			else
-			{
-				s = &s_guyidle2;
-			}
-		}
+
+		Sprite &s = Guy.GetFrame(anim, guyanim);
 
 		SDL_RendererFlip flip = guywalkdir ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
 
@@ -140,7 +133,7 @@ public:
 			circle2.Render(renderer, guyx, guyy, 32);
 		}
 
-		s->Render(renderer, guyx, guyy, 0.0f, 1.0f, flip);
+		s.Render(renderer, guyx, guyy, 0.0f, 1.0f, flip);
 	}
 
 	void UpdateScore()
@@ -186,7 +179,6 @@ public:
 	{
 		const float speed = 200.0f;
 		guyanim += dt;
-		if (guyanim > 1.0f) guyanim -= 1.0f;
 
 
 		glm::vec2 guy{guyx, guyy};

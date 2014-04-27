@@ -5,8 +5,8 @@ all: BeneathTheSurface
 SDL_SRCS=sdl_exception.cpp sdl_init.cpp window.cpp renderer.cpp texture.cpp surface.cpp sound.cpp
 FONT_SRCS=freetype_exception.cpp library.cpp face.cpp glyph.cpp font.cpp text.cpp
 TILE_SRCS=tile.cpp map.cpp
-SPRITE_SRCS=sprite.cpp circle.cpp
-MAIN_SRCS=game_base.cpp main.cpp
+SPRITE_SRCS=sprite.cpp circle.cpp animated_sprite.cpp
+MAIN_SRCS=game_base.cpp world.cpp object.cpp main.cpp
 
 VPATH=src:src/sdl:src/font:src/tiles:src/sprites
 CFLAGS+="-Isrc"
