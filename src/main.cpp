@@ -83,6 +83,7 @@ public:
 	float guyx = 100;
 	float guyy = 100;
 	float guyanim = 0.0f;
+	float guywalkdist = 0.0f;
 
 	bool guywalking = false;
 	bool guywalkdir = false;
@@ -96,6 +97,8 @@ public:
 
 
 	Sound sound1{"data/sounds/beep1.wav"};
+	Sound sound_walk1{"data/sounds/walk_grass1.wav"};
+	Sound sound_walk2{"data/sounds/walk_sand1.wav"};
 
 	void InitGuy()
 	{
@@ -111,6 +114,11 @@ public:
 	void PlaySound()
 	{
 		sound1.Play(); //Mix_PlayChannel(-1, sound1, 0);
+	}
+
+	void GuyStepSound()
+	{
+		sound_walk2.Play();
 	}
 
 	int gold_nuggets = 0;
@@ -179,6 +187,15 @@ public:
 	{
 		const float speed = 200.0f;
 		guyanim += dt;
+		if (guywalking)
+		{
+			guywalkdist+=dt;
+			if (guywalkdist >= 0.2f)
+			{
+				GuyStepSound();
+				guywalkdist = 0.0f;
+			}
+		}
 
 
 		glm::vec2 guy{guyx, guyy};
@@ -189,6 +206,10 @@ public:
 
 		if (distance < 1.0f)
 		{
+			if (guywalking)
+			{
+				GuyStepSound();
+			}
 			guywalking = false;
 			return;
 		}
@@ -251,6 +272,7 @@ public:
 			dragging1 = down;
 			setguyx = x;
 			setguyy = y;
+			if (not guywalking) { GuyStepSound(); }
 			guywalking=true;
 		}
 		if (but == 2)
@@ -274,6 +296,7 @@ public:
 		{
 			setguyx = x;
 			setguyy = y;
+			if (not guywalking) { GuyStepSound(); }
 			guywalking=true;
 		}
 
